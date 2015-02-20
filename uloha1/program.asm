@@ -10,44 +10,40 @@ setup	xor ax,ax	;set segments to known values
 	mov es,ax
 	cld
 
-	mov dx, 1137h
-	push dx
 
+			;CODE BEGINS HERE
 	mov ah,0fh	;barva
+	push 0xface
+	call printIt
+	push 0xb00c
+	call printIt
+	jmp $
 
-		;CODE BEGINS HERE
 
-doshit:
+	
+printIt:
+	pop cx
+	pop dx
+	push cx
+	mov cx, 4
+print:
 	mov al,dl
 	shr dx,4
 	and al,0x0f
-	cmp al, 0
-	je konec
 
-print	add al, '0'
+	add al, '0'
 	cmp al, '9'
 	jle putchar
 	add al, 'A' - 10 - '0'
 	
-putchar	push ax
+putchar:
+	push ax
 	
-	jmp doshit
+	loop print
+	mov cx, 4
 
 konec	pop ax
 	stosw
-	pop ax
-	stosw
-	pop ax
-	stosw
-	pop ax
-	stosw
-	jmp $
-
-;	pop dx
-;	shrd 4,dx,dx
-;	push dx	
-;	and dx,15h
-;	mov ax,dx
-;	jmp print
-
-
+	loop konec
+	
+	ret
