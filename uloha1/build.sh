@@ -1,3 +1,4 @@
 #!/bin/sh
-nasm src/nasmboot.asm -i"$(pwd)/src/" -o bin/boot.bin
-qemu-system-i386 -fda bin/boot.bin
+cd src; #this is a NASM hack
+nasm nasmboot.asm -o ../bin/boot.bin
+qemu-system-i386 -fda ../bin/boot.bin
