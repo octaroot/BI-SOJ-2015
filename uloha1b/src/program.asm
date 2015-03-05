@@ -1,29 +1,31 @@
-;push-a-roo
+jmp setup
 
-	;chtel jsem dodrzet poradi ze screenu, jinak bychpouzil pusha
-
-	push dx
+setup:
+    push dx
 	push cx
 	push bx
 	push ax
-	pushf		;flags
+	pushf
 	push ss
 	push es
 	push ds
-	push cs
-	call next	;retrieve IP my calling and abusing the pushed value
-next	pop eax
+    push cs
+	call next     ;call (0h):next far mi dava o 1 byte vic :(
+next:
+    pop eax
 	sub eax, 0xc
 	push eax
-	mov ax, sp	;fix SP value
+	mov ax, sp         ;fix SP value
 	add ax, 0x14
 	push ax
 	push bp
 	push di
 	push si
-
-			;VGA SETUP
-setup	xor ax,ax	;set segments to known values
+                
+	xor ax,ax	;set segments to known values
+    mov ss,ax
+	mov ds,ax
+    
 	mov al,3	;set VGA mode 80x25
 	int 10h
 	mov ax,0b800h
@@ -31,37 +33,17 @@ setup	xor ax,ax	;set segments to known values
 	cld
 
 
-			;CODE BEGINS HERE
-	mov ah,0fh	;barva
-	mov si, nazvy
-
-	mov bl, 0
-
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	call printIt
-	jmp $
-
-
-	
+	mov ah, 00001111b      ;barva
+	mov si, nazvy          ;zdroj dat
+    xor bl, bl
+    
+    mov bp, 14
+    
 printIt:
 	add bl, 00001001b
 	mov ah, bl
-	pop cx
 	pop dx
-	push cx
-	lodsb		; print register name
+	lodsb
 	stosw
 	lodsb
 	stosw
@@ -70,8 +52,8 @@ printIt:
 	mov cx, 4
 	
 print:
+	rol dx,4
 	mov al,dl
-	shr dx,4
 	and al,0x0f
 
 	add al, '0'
@@ -80,19 +62,16 @@ print:
 	add al, 'A' - 10 - '0'
 	
 putchar:
-	push ax
-	
+	stosw
 	loop print
-	mov cx, 4
-
-konec	pop ax
+    
+    mov al, ' '
 	stosw
-	loop konec
-	
-	mov al, ' '
-	stosw
+    
+    
+    dec bp
+    jnz printIt
+    
+	jmp $
 
-	ret
-
-
-nazvy	db "SIDIBPSPIPCSDSESSSFLAXBXCXDX",0
+nazvy	db "SIDIBPSPIPCSDSESSSFLAXBXCXDX", 0h
