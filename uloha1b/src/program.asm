@@ -28,11 +28,10 @@ next:
 	mov es,ax
 	cld
 
-
 	mov si, nazvy          ;zdroj dat
     	xor ax, ax
     
-    	mov bp, 14
+    	mov bl, 14
     
 printIt:
 	add ah, 00001001b
@@ -43,7 +42,7 @@ printIt:
 	stosw
 	mov al, ':'
 	stosw
-	mov cx, 4
+	mov cl, 4
 	
 print:
 	rol dx,4
@@ -59,13 +58,13 @@ putchar:
 	stosw
 	loop print
     
-    mov al, ' '
+    	mov al, ' '
 	stosw
     
     
-    dec bp
-    jnz printIt
+	dec bx
+	jnz printIt
     
 	jmp $
 
-nazvy	db "SIDIBPSPIPCSDSESSSFLAXBXCXDX", 0h
+nazvy	db "SIDIBPSPIPCSDSESSSFLAXBXCXDX"
