@@ -48,11 +48,10 @@ print:
 	rol dx,4
 	mov al,dl
 	and al,0x0f
-
-	add al, '0'
-	cmp al, '9'
-	jle putchar
-	add al, 'A' - 10 - '0'
+	add al, 90h
+	daa
+	adc al, 40h
+	daa
 	
 putchar:
 	stosw
