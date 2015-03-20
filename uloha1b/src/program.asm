@@ -1,7 +1,4 @@
-jmp setup
-
-setup:
-    push dx
+	push dx
 	push cx
 	push bx
 	push ax
@@ -9,11 +6,10 @@ setup:
 	push ss
 	push es
 	push ds
-    push cs
-	call next     ;call (0h):next far mi dava o 1 byte vic :(
+	call (0h):next
 next:
-    pop eax
-	sub eax, 0xc
+	pop eax
+	sub eax, 0xd
 	push eax
 	mov ax, sp         ;fix SP value
 	add ax, 0x14
@@ -23,7 +19,7 @@ next:
 	push si
                 
 	xor ax,ax	;set segments to known values
-    mov ss,ax
+    	mov ss,ax
 	mov ds,ax
     
 	mov al,3	;set VGA mode 80x25
@@ -33,15 +29,13 @@ next:
 	cld
 
 
-	mov ah, 00001111b      ;barva
 	mov si, nazvy          ;zdroj dat
-    xor bl, bl
+    	xor ax, ax
     
-    mov bp, 14
+    	mov bp, 14
     
 printIt:
-	add bl, 00001001b
-	mov ah, bl
+	add ah, 00001001b
 	pop dx
 	lodsb
 	stosw
