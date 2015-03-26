@@ -17,10 +17,12 @@ setup:
 
 	xor dx,dx
 
+	mov [24h], CS
+	mov [26h], word klav
+
+
 count:
 	inc dx
-
-	
 
 print:
 
@@ -36,4 +38,10 @@ print:
 
 	jmp count
 
-	jmp $
+klav:
+	push ax
+	in al, 60h
+	mov al, 20h
+	out 20h, al
+	pop ax
+	iret
