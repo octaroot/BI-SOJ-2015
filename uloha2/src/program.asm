@@ -15,18 +15,25 @@ setup:
 	rep
 	stosw
 
+	xor dx,dx
+
+count:
+	inc dx
+
+	
+
+print:
+
 	mov di, (80*2-2)*2	;druhy radek, 1 pozici od konce
 
 	std
 
 	mov ah, 00011110b
-	mov al, 'a'
+	mov al, dl
 	stosw
-	mov al, 'h'
-	stosw
-	mov al, 'o'
-	stosw
-	mov al, 'j'
-	stosw
+
+	cld
+
+	jmp count
 
 	jmp $
