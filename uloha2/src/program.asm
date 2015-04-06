@@ -22,17 +22,26 @@ setup:
 
 
 count:
-	inc dx
+	push di
+	mov di, buf
+
+	
+
+	pop di
 
 print:
-
 	mov di, (80*2-2)*2	;druhy radek, 1 pozici od konce
+	mov cl, 10
 
 	std
 
 	mov ah, 00011110b
+
+doPrint:
 	mov al, dl
 	stosw
+
+	loop doPrint
 
 	cld
 
@@ -45,3 +54,5 @@ klav:
 	out 20h, al
 	pop ax
 	iret
+
+buf: dw 0h,0h,0h,0h,0h,0h,0h,0h,0h,0h
