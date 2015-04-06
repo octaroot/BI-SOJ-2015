@@ -9,41 +9,49 @@ setup:
 	mov ax,0b800h
 	mov es,ax
 
-    
 	mov cx, 4000
 	mov ah, 00000111b
 	rep
 	stosw
 
-	xor dx,dx
+;	mov [24h], word klav
+;	mov [26h], CS
 
-	mov [24h], CS
-	mov [26h], word klav
-
+	std
 
 count:
-	push di
-	mov di, buf
+	mov di, buf + 10
+	mov si, di
+
+doCount:
+
+	inc byte [si]
+	lodsb
+
+	cmp al, 3ah
+	jne print
+
+	and byte [di], 30h
+	dec di
+	
+	cmp si, buf
+	je print
+	jmp doCount	
+
 
 	
-
-	pop di
-
 print:
 	mov di, (80*2-2)*2	;druhy radek, 1 pozici od konce
 	mov cl, 10
 
-	std
-
 	mov ah, 00011110b
+	mov si, buf + 10
 
 doPrint:
-	mov al, dl
+	lodsb
 	stosw
 
 	loop doPrint
-
-	cld
 
 	jmp count
 
@@ -55,4 +63,4 @@ klav:
 	pop ax
 	iret
 
-buf: db 0h,0h,0h,0h,0h,0h,0h,0h,0h,0h
+buf: db 30h,30h,30h,30h,30h,30h,30h,30h,30h,30,30h
