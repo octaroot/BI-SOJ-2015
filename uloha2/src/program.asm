@@ -55,4 +55,4 @@ klav:
 	pop ax
 	iret
 
-buf: dw 0h,0h,0h,0h,0h,0h,0h,0h,0h,0h
+buf: db 0h,0h,0h,0h,0h,0h,0h,0h,0h,0h
