@@ -79,10 +79,11 @@ klav:
 	push cx
 	push dx
 
-;	in al, 60h
-;	mov cl, 1
-;	shl al, cl
-;	jnc konecPreruseni
+				;act as onkeyup
+	in al, 60h
+	mov cl, 1
+	shl al, cl
+	jnc konecPreruseni
 	
 
 	mov ax,0b800h
@@ -132,7 +133,7 @@ barvaOK:
 
 	cld
 
-;	push di
+	push di
 	mov dh, 2
 super:	mov dl, 7
 outer:	mov cx, 8
@@ -142,11 +143,67 @@ inner:	stosw
 	dec dl
 	jnz outer
 	sub di, 7 * 160 - 16
-	rol ah, 4
+;	rol ah, 4
 	dec dh
 	jnz super
 
+	pop di
+	add di, 162
+
+	push ds
+
+	mov bl,ah
+
+	in al, 60h
+	and ax, 000Fh
+	push ax
+
+	in al, 60h
+	and ax, 00F0h
+	shr ax, 4
+	push ax
+	
+
+	xor ax,ax
+	mov ds,ax
+
+	mov dh, 2
+super2:	mov dl, 5
+
+	pop ax
+
+	;konverze na radek ve fontu
+	mov si, font
+	mov ah, 5
+	mul ah
+	xor ah,ah
+	add si, ax
+
+outer2:	lodsb
+	xchg bh,al
+	mov al, 0DBh
+	mov cx, 6
+	shl bh, 1
+inner2:	mov ah, bl
+	shl bh, 1
+	jnc neneguj
+	not ah
+neneguj:stosw
+	loop inner2
+	add di, 160 - 12
+	dec dl
+	jnz outer2
+
+
+	sub di, 5 * 160 - 16
+;	rol ah, 4
+	dec dh
+	jnz super2
+
+
 	std
+
+	pop ds
 
 
 konecPreruseni:
