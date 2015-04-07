@@ -1,3 +1,5 @@
+
+
 jmp setup
 setup:
 
@@ -77,18 +79,17 @@ klav:
 	push cx
 	push dx
 
-	in al, 60h
-	mov cl, 1
-	shl al, cl
-	jnc konecPreruseni
+;	in al, 60h
+;	mov cl, 1
+;	shl al, cl
+;	jnc konecPreruseni
 	
 
 	mov ax,0b800h
 	mov es,ax
 
 	xor di,di
-;1,0
-;54,28
+
 getRand:			;AH=mod, AL=quotient
 	mov ax, bp
 	mov bx, 33333
@@ -112,24 +113,26 @@ getRand:			;AH=mod, AL=quotient
 	mul cx
 	add di, ax		;a pridat
 
-
 	in al, 60h
+
 	mov bl,al
 	mov bh,al
 	and bl, 07h
 	and bh, 070h
 	shr bh, 4
+
 	and bl,bh
 	jne barvaOK
 	not al	
 
-barvaOK:
-	mov ah, 0DBh
 
+barvaOK:
 	xchg al,ah
+	mov al, 0DBh
 
 	cld
 
+;	push di
 	mov dh, 2
 super:	mov dl, 7
 outer:	mov cx, 8
@@ -144,6 +147,7 @@ inner:	stosw
 	jnz super
 
 	std
+
 
 konecPreruseni:
 
@@ -161,3 +165,5 @@ konecPreruseni:
 
 
 buf:	dw 8000
+
+%include 'ul2font.asm'
