@@ -87,7 +87,8 @@ klav:
 	mov es,ax
 
 	xor di,di
-
+;1,0
+;54,28
 getRand:			;AH=mod, AL=quotient
 	mov ax, bp
 	mov bx, 33333
@@ -95,21 +96,20 @@ getRand:			;AH=mod, AL=quotient
 	add ax, 1
 	mov bp,ax		;bp=ax=m_new
 
-	xor ah,ah
-	mov cl, 65
-	div cl
-	push ax
+	xor dx,dx
+	mov cx, 65
+	div cx
+	push ax			;al je /, ah je mod
 
-	mov ch, 2		;2 byty na kazdy bod na X
-	mul ch
-	mov di,ax
+	add dx,dx
+	xchg di,dx		;na kazdy znak 2bity
 
 	pop ax			;a ted quotient mod 44
-	xchg al,ah
-	mov cl, 44
-	div cl
-	mov ch, 160		;jeden radek += 160
-	mul ch
+	mov cx, 44
+	div cx
+	xchg ax,dx
+	mov cx, 160		;jeden radek += 160
+	mul cx
 	add di, ax		;a pridat
 
 
