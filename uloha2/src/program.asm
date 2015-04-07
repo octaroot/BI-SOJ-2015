@@ -77,32 +77,41 @@ klav:
 	push cx
 	push dx
 
+	in al, 60h
+	mov cl, 1
+	shl al, cl
+	jnc konecPreruseni
+	
+
 	mov ax,0b800h
 	mov es,ax
 
 	xor di,di
 
-getRand:			;dx mod, ax /
+getRand:			;AH=mod, AL=quotient
 	mov ax, bp
 	mov bx, 33333
 	mul bx
 	add ax, 1
-	mov bp,ax
-	mov cx, 65
-	div cx
-	mov di, ax
+	mov bp,ax		;bp=ax=m_new
+
+	xor ah,ah
+	mov cl, 65
+	div cl
 	push ax
-	xchg ax,dx
-	mov ch, 160
+
+	mov ch, 2		;2 byty na kazdy bod na X
 	mul ch
-	mov di, ax
-	
-	pop ax
-	mov ch, 44
-	div cx
-	add di, dx
-	add di, dx
-	
+	mov di,ax
+
+	pop ax			;a ted quotient mod 44
+	xchg al,ah
+	mov cl, 44
+	div cl
+	mov ch, 160		;jeden radek += 160
+	mul ch
+	add di, ax		;a pridat
+
 
 	in al, 60h
 	mov bl,al
@@ -114,7 +123,8 @@ getRand:			;dx mod, ax /
 	jne barvaOK
 	not al	
 
-barvaOK:mov ah, 0DBh
+barvaOK:
+	mov ah, 0DBh
 
 	xchg al,ah
 
@@ -134,6 +144,8 @@ inner:	stosw
 	jnz super
 
 	std
+
+konecPreruseni:
 
 	mov al, 20h
 	out 20h, al
