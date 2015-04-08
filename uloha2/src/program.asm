@@ -80,10 +80,10 @@ klav:
 	push dx
 
 				;act as onkeyup
-	in al, 60h
-	mov cl, 1
-	shl al, cl
-	jnc konecPreruseni
+;	in al, 60h
+;	mov cl, 1
+;	shl al, cl
+;	jnc konecPreruseni
 	
 
 	mov ax,0b800h
@@ -122,12 +122,21 @@ getRand:			;AH=mod, AL=quotient
 	and bh, 070h
 	shr bh, 4
 
-	and bl,bh
-	jne barvaOK
-	not al	
+	xor bl,bh
 
+	jnz barvaOK
+	mov ah, al
+	shr ah, 4
+	not ah
+	and ah, 00001111b
+	and al, 11110000b
+	or al, ah
+;	jmp $
+	
 
 barvaOK:
+;	and al, 10001000b
+	rol al, 4
 	xchg al,ah
 	mov al, 0DBh
 
@@ -187,7 +196,8 @@ outer2:	lodsb
 inner2:	mov ah, bl
 	shl bh, 1
 	jnc neneguj
-	not ah
+	shr ah, 4
+
 neneguj:stosw
 	loop inner2
 	add di, 160 - 12
