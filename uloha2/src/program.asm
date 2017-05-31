@@ -1,5 +1,11 @@
 jmp setup
 setup:
+
+	cli
+	mov [24h], word klav
+	mov [26h], CS
+	sti
+
 	xor ax,ax		;set segments to known values
     	mov ss,ax
 	mov ds,ax
@@ -13,9 +19,6 @@ setup:
 	mov ah, 00000111b
 	rep
 	stosw
-
-;	mov [24h], word klav
-;	mov [26h], CS
 
 	std
 
@@ -55,12 +58,85 @@ doPrint:
 
 	jmp count
 
+
+
 klav:
+	cli
 	push ax
+	push es
+	push di
+	push cx
+	push dx
+
+	mov ax,0b800h
+	mov es,ax
+
+	xor di,di
+
+getRand:			;dx mod, ax /
+	mov ax, bp
+	mov bx, 33333
+	mul bx
+	add ax, 1
+	mov bp,ax
+	mov cx, 65
+	div cx
+	mov di, ax
+	push ax
+	xchg ax,dx
+	mov ch, 160
+	mul ch
+	mov di, ax
+	
+	pop ax
+	mov ch, 44
+	div cx
+	add di, dx
+	add di, dx
+	
+
 	in al, 60h
+	mov bl,al
+	mov bh,al
+	and bl, 07h
+	and bh, 070h
+	shr bh, 4
+	and bl,bh
+	jne barvaOK
+	not al	
+
+barvaOK:mov ah, 0DBh
+
+	xchg al,ah
+
+	cld
+
+	mov dh, 2
+super:	mov dl, 7
+outer:	mov cx, 8
+inner:	stosw
+	loop inner
+	add di, 160 - 16
+	dec dl
+	jnz outer
+	sub di, 7 * 160 - 16
+	rol ah, 4
+	dec dh
+	jnz super
+
+	std
+
 	mov al, 20h
 	out 20h, al
+
+	pop dx
+	pop cx
+	pop di
+	pop es
 	pop ax
+
+	sti
 	iret
 
-buf: db 30h,30h,30h,30h,30h,30h,30h,30h,30h,30,30h
+
+buf:	dw 8000
