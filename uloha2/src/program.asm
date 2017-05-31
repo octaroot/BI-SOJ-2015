@@ -8,12 +8,14 @@ setup:
 
 	xor ax,ax		;set segments to known values
     	mov ss,ax
-	mov ds,ax
+	mov di,ax
+	mov bp,ax
     
 	mov ax,1112h		;set VGA mode 80x50
 	int 10h
 	mov ax,0b800h
 	mov es,ax
+	mov ds,ax
 
 	mov cx, 4000
 	mov ah, 00000111b
