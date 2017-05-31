@@ -24,26 +24,33 @@ setup:
 
 	std
 
+	mov di, buf + 10
+	mov cx, 10
+	mov al, 30h
+	rep
+	stosb
+
 count:
 	mov di, buf + 10
 	mov si, di
 
 doCount:
 
-	inc byte [si]
 	lodsb
-
+	inc al
+	
 	cmp al, 3ah
-	jne print
+	jne beforePrint
 
-	and byte [di], 30h
-	dec di
+	and al, 30h
+	stosb
 	
 	cmp si, buf
 	je print
 	jmp doCount	
 
-
+beforePrint:
+	stosb
 	
 print:
 	mov di, (80*2-2)*2	;druhy radek, 1 pozici od konce
